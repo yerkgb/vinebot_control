@@ -1,0 +1,148 @@
+<?xml version="1.0"?>
+<!--
+Copyright (C) 2020, Raffaello Bonghi <raffaello@rnext.it>
+All rights reserved
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+1. Redistributions of source code must retain the above copyright 
+   notice, this list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+3. Neither the name of the copyright holder nor the names of its 
+   contributors may be used to endorse or promote products derived 
+   from this software without specific prior written permission.
+ 
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND 
+CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, 
+BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS 
+FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, 
+SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; 
+OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
+OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-->
+<robot name="vinebot" xmlns:xacro="http://ros.org/wiki/xacro">
+
+<xacro:include filename="$(find vinebot_description)/urdf/materials.xacro" />
+
+    <!-- Arguments -->
+    <xacro:arg name="size"   default="0.8"/> <!-- size robot -->
+    <xacro:arg name="radius"   default="0.08"/> <!-- radius wheels -->
+    <xacro:arg name="wheelbase"   default="0.55"/> <!-- wheelbase differential drive -->
+    <!-- Global properties -->
+    <xacro:property name="M_PI" value="3.14159"/>
+    <xacro:property name="robot_size" value="$(arg size)"/>
+    <xacro:property name="wheel_radius" value="$(arg radius)"/>
+    <xacro:property name="mwheelbase" value="$(arg wheelbase)"/>
+    <xacro:property name="wheel_width" value="$(arg wheelwidth)"/>
+
+
+
+<link name="base_link">
+        <visual>
+            <origin xyz="0 0 0.1" rpy="0 0 0" />
+            <geometry>
+                <cylinder length="0.2" radius="${robot_size}"/>
+            </geometry>
+            <material name="yellow">
+                <color rgba="1 1 0 0.5"/>
+            </material>
+        </visual>
+    </link>
+
+
+<link name="base_link_real">
+  <inertial>
+    <origin rpy="0 0 0" xyz="0.3733685481948254 3.982448910416214e-05 0.15740777035883136"/>
+    <mass value="76.37622695455383"/>
+    <inertia ixx="1.647594" ixy="0.003226" ixz="0.018226" iyy="3.898909" iyz="0.003649" izz="4.783297"/>
+  </inertial>
+  <visual>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <geometry>
+      <mesh filename="package://vinebot_description/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <geometry>
+      <mesh filename="package://vinebot_description/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+
+<joint name="base_link_to_base_link_real" type="fixed">
+        <axis xyz="5 0 0"/>
+        <parent link="base_link"/>
+        <child link="base_link_real"/>
+    </joint>
+
+
+
+    <link name="left_wheel">
+        <visual>
+            <geometry>
+                <cylinder length="${wheel_width}" radius="${wheel_radius}"/>
+            </geometry>
+            <material name="blue">
+                <color rgba="0 0 1 1"/>
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <cylinder length="${wheel_width}" radius="${wheel_radius}"/>
+            </geometry>
+        </collision>
+    </link>
+
+   
+    <joint name="left_joint" type="continuous">
+        <axis xyz="0 0 1"/>
+        <parent link="base_link"/>
+        <child link="left_wheel"/>
+        <origin rpy="${M_PI/2} 0 0" xyz="0 ${mwheelbase/2} ${wheel_radius}"/>
+        <limit effort="100" velocity="100"/>
+        <joint_properties damping="0.0" friction="0.0"/>
+    </joint>
+
+
+
+    <link name="right_wheel">
+        <visual>
+        <geometry>
+            <cylinder length="${wheel_width}" radius="${wheel_radius}"/>
+        </geometry>
+            <material name="blue">
+                <color rgba="0 0 1 1"/>
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <cylinder length="${wheel_width}" radius="${wheel_radius}"/>
+            </geometry>
+        </collision>
+    </link>
+
+
+  
+
+
+
+    <joint name="right_joint" type="continuous">
+        <axis xyz="0 0 1"/>
+        <parent link="base_link"/>
+        <child link="right_wheel"/>
+        <origin rpy="${M_PI/2} 0 0" xyz="0 -${mwheelbase/2} ${wheel_radius}"/>
+        <limit effort="100" velocity="100"/>
+        <joint_properties damping="0.0" friction="0.0"/>
+    </joint>
+
+</robot>
