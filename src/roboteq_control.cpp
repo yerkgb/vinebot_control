@@ -117,7 +117,7 @@ int main(int argc, char **argv) {
     string serial_port_string;
     int32_t baud_rate;
 
-    private_nh.param<string>("serial_port", serial_port_string, "/dev/ttyACM0");
+    private_nh.param<string>("serial_port", serial_port_string, "/dev/ttyUSB0");
     private_nh.param<int32_t>("serial_rate", baud_rate, 115200);
     ROS_INFO_STREAM("Open Serial " << serial_port_string << ":" << baud_rate);
 
